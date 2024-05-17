@@ -166,15 +166,27 @@ const ManagerCard = ({ manager, myData, data, setData }) => {
             </button>
           </div>
         ) : (
-          <Button
-            secondary
-            className=" text-white px-3 py-1.5 rounded w-full text-sm"
-            onClick={() =>
-              document.getElementById(`${manager._id}`).showModal()
-            }
-          >
-            Request Service
-          </Button>
+          <div className="flex space-x-2">
+            <Button
+              secondary
+              outline
+              className="  px-3 py-1.5 rounded w-full text-sm"
+              onClick={() =>
+                navigate(`/review/${manager._id}?service=${serviceCount}`)
+              }
+            >
+              See Reviews
+            </Button>
+            <Button
+              secondary
+              className=" text-white px-3 py-1.5 rounded w-full text-sm"
+              onClick={() =>
+                document.getElementById(`${manager._id}`).showModal()
+              }
+            >
+              Request Service
+            </Button>
+          </div>
         )}
       </div>
 

@@ -19,6 +19,7 @@ import MyCategories from "./pages/MyCategories";
 import RequestService from "./pages/RequestService";
 import ServiceRequest from "./pages/ServiceRequest";
 import Payment from "./components/Payment";
+import Review from "./pages/Review";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: "/payment/:id",
         element: <Payment />,
+      },
+      {
+        path: "/review/:id",
+        element: <Review />,
       },
     ],
   },
