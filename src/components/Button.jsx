@@ -70,8 +70,11 @@ function Button({ children, primary, secondary, outline, reject, ...rest }) {
             : reject
             ? rejectStyle
             : ""
-        } ${rest.className}`}
+        } ${rest.className} flex justify-center items-center`}
       >
+        {rest.loading && (
+          <span className="loading loading-spinner loading-xs mr-2"></span>
+        )}
         {children}
       </button>
     </div>

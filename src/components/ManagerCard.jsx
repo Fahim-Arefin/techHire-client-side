@@ -64,7 +64,9 @@ const ManagerCard = ({ manager, myData, data, setData }) => {
       setLoading(true);
       const userInfo = await axiosPublic.get(`/users/${user.email}`);
       if (!userInfo) {
-        throw new Error("User not found");
+        console.log("first");
+        // throw new Error("User not found");
+        errorToast("User not found", 2000);
       } else {
         const body = {
           details: data.description,
@@ -208,6 +210,18 @@ const ManagerCard = ({ manager, myData, data, setData }) => {
                 autoComplete="tel"
                 {...register("phoneNumber", {
                   required: "Phone number is required",
+                  pattern: {
+                    value: /^[0-9]*$/,
+                    message: "Only numbers are allowed",
+                  },
+                  minLength: {
+                    value: 11,
+                    message: "Phone number must be exactly 11 digits",
+                  },
+                  maxLength: {
+                    value: 11,
+                    message: "Phone number must be exactly 11 digits",
+                  },
                 })}
                 className={`mt-1 p-2 block w-full rounded-md border ${
                   errors.phoneNumber ? "border-red-500" : "border-gray-300"
@@ -278,7 +292,7 @@ const ManagerCard = ({ manager, myData, data, setData }) => {
         </div>
       </Modal>
       <ToastContainer
-        position="top-center"
+        position="top-right"
         autoClose={2000}
         hideProgressBar={false}
         newestOnTop={false}

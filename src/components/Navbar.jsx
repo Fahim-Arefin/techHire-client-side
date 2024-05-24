@@ -2,25 +2,11 @@ import { NavLink } from "react-router-dom";
 
 import Button from "./Button";
 import { FiLogIn } from "react-icons/fi";
-import useAuth from "../hooks/useAuth";
 import UserDropdown from "./UserDropdown";
+import useUserRole from "../hooks/useUserRole";
 
 function Navbar({ className }) {
-  const { user } = useAuth();
-  // const navigate = useNavigate();
-  console.log(user);
-  console.log(user?.photoURL);
-
-  // const handleLogOut = () => {
-  //   logOut()
-  //     .then(() => {
-  //       // console.log("Logged out");
-  //       navigate("/login");
-  //     })
-  //     .catch((e) => {
-  //       console.log(e);
-  //     });
-  // };
+  const [currentUser] = useUserRole();
 
   return (
     <div
@@ -59,15 +45,16 @@ function Navbar({ className }) {
             <li>
               <NavLink to="/service/request">Requested Services</NavLink>
             </li>
-            {user && (
-              <li>
-                <NavLink to="/dashboard">Dashboard</NavLink>
-              </li>
-            )}
+            {currentUser === "admin" ||
+              (currentUser === "manager" && (
+                <li>
+                  <NavLink to="/dashboard">Dashboard</NavLink>
+                </li>
+              ))}
           </ul>
         </div>
-        <div className="text-xl tracking-widest font-bold flex items-center space-x-4 px-6 py-4 rounded-lg">
-          <div className="w-32 md:w-44">
+        <div className="text-xl tracking-widest font-bold flex items-center space-x-4 rounded-lg">
+          <div className="w-32 md:w-44 h-[75px]  bg-red-400">
             <img className="w-full h-full" src="/logo.png" alt="" />
           </div>
           {/* <span className="bg-gradient-to-r from-yellow-500 to-orange-400 text-transparent bg-clip-text text-xl lg:text-2xl">
@@ -103,7 +90,7 @@ function Navbar({ className }) {
             </NavLink>
           </li>
 
-          {user && (
+          {currentUser === "manager" && (
             <li>
               <NavLink
                 className="cursor-pointer hover:border-b hover:border-b-[#f87060] hover:text-[#f87060] transition-all duration-150 px-1 py-1 rounded-sm "
@@ -113,10 +100,23 @@ function Navbar({ className }) {
               </NavLink>
             </li>
           )}
+          {(currentUser === "admin" || currentUser === "super-admin") && (
+            <li>
+              <NavLink
+                className="cursor-pointer hover:border-b hover:border-b-[#f87060] hover:text-[#f87060] transition-all duration-150 px-1 py-1 rounded-sm "
+                to="/admin/dashboard"
+              >
+                Dashboard
+              </NavLink>
+            </li>
+          )}
         </ul>
       </div>
       <div className="navbar-end">
-        {user ? (
+        {currentUser === "user" ||
+        currentUser === "manager" ||
+        currentUser === "super-admin" ||
+        currentUser === "admin" ? (
           <UserDropdown />
         ) : (
           <div>

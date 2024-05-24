@@ -4,12 +4,14 @@ import useAuth from "../hooks/useAuth";
 import { ToastContainer } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Button from "../components/Button";
 
 const Category = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, successToast, errorToast } = useAuth();
   const [editData, setEditData] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const axiosPublic = useAxiosPublic();
   const {
@@ -25,22 +27,29 @@ const Category = () => {
     data.managerName = user.displayName;
 
     if (id) {
+      setLoading(true);
       const res = await axiosPublic.patch(`/api/category/${id}`, data);
       if (res.status === 200) {
         console.log("res data", res.data);
         successToast("Category Updated Successfully", 2000);
         reset();
         navigate("/dashboard/categories");
+        setLoading(false);
       } else {
+        setLoading(false);
         errorToast(res.data.message, 2000);
       }
     } else {
+      setLoading(true);
       const res = await axiosPublic.post("/api/category", data);
       if (res.status === 201) {
         console.log("res data", res.data);
         successToast("Category Added Successfully", 2000);
         reset();
+        setLoading(false);
+        navigate("/dashboard/categories");
       } else {
+        setLoading(false);
         errorToast(res.data.message, 2000);
       }
     }
@@ -203,12 +212,14 @@ const Category = () => {
           )}
         </div>
         <div>
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 w-full"
+          <Button
+            loading={loading}
+            secondary
+            // className="bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 w-full"
+            className=" w-full px-6 py-3 rounded-md"
           >
             {id ? "Update" : "Submit"}
-          </button>
+          </Button>
         </div>
       </form>
       <ToastContainer

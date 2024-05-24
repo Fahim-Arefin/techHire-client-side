@@ -12,14 +12,17 @@ const CheckoutForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
     // Block native form submission.
     event.preventDefault();
+    setLoading(true);
 
     if (!stripe || !elements) {
       // Stripe.js has not loaded yet. Make sure to disable
       // form submission until Stripe.js has loaded.
+      setLoading(false);
       return;
     }
 
@@ -29,6 +32,7 @@ const CheckoutForm = () => {
     const card = elements.getElement(CardElement);
 
     if (card == null) {
+      setLoading(false);
       return;
     }
 
@@ -41,6 +45,7 @@ const CheckoutForm = () => {
     if (error) {
       setError(error.message);
       console.log("[error]", error);
+      setLoading(false);
     } else {
       setError("");
       console.log("[PaymentMethod]", paymentMethod);
@@ -56,6 +61,7 @@ const CheckoutForm = () => {
           status: "paid",
         });
         if (res2.status === 200) {
+          setLoading(false);
           Swal.fire({
             icon: "success",
             title: "Success",
@@ -73,6 +79,7 @@ const CheckoutForm = () => {
             showConfirmButton: false,
             timer: 1500,
           });
+          setLoading(false);
         }
       } else {
         Swal.fire({
@@ -82,6 +89,7 @@ const CheckoutForm = () => {
           showConfirmButton: false,
           timer: 1500,
         });
+        setLoading(false);
       }
     }
   };
@@ -111,16 +119,17 @@ const CheckoutForm = () => {
           className="px-3 py-2 rounded-md mt-6 mb-2 flex items-center space-x-2"
           type="submit"
           disabled={!stripe}
+          loading={loading}
         >
-          (
-          <div className="w-6 h-6 ">
-            <img
-              className="h-full w-full"
-              src="https://img.icons8.com/ios-filled/50/card-in-use.png"
-              alt="card-in-use"
-            />
-          </div>
-          )
+          {!loading && (
+            <div className="w-6 h-6 ">
+              <img
+                className="h-full w-full"
+                src="https://img.icons8.com/ios-filled/50/card-in-use.png"
+                alt="card-in-use"
+              />
+            </div>
+          )}
           <span className="">
             {/* {mutation.isPending ? "Paying..." : "Payment"} */}
             payment

@@ -145,6 +145,7 @@ const SearchBar = ({ className, hidePanel, onSubmitData }) => {
             Search
           </Button>
         </div>
+
         <div className={`w-[100%] text-center ${arrow ? "block" : "hidden"}`}>
           <div className="flex justify-center items-center">
             <div className="flex flex-col items-center mr-8">
@@ -159,7 +160,7 @@ const SearchBar = ({ className, hidePanel, onSubmitData }) => {
                   min={0}
                   max={5000} // Adjust max value according to your requirements
                   onChange={handleMinChargeChange}
-                  className="border border-gray-300 rounded px-2 py-1 mb-2 w-48"
+                  className="border border-gray-300 rounded px-2 py-1 mb-2 md:w-48"
                 />
                 <span className="ml-2">${minCharge}</span>
               </div>
@@ -176,7 +177,7 @@ const SearchBar = ({ className, hidePanel, onSubmitData }) => {
                   min={0}
                   max={5000} // Adjust max value according to your requirements
                   onChange={handleMaxChargeChange}
-                  className="border border-gray-300 rounded px-2 py-1 mb-2 w-48"
+                  className="border border-gray-300 rounded px-2 py-1 mb-2 md:w-48"
                 />
                 <span className="ml-2">${maxCharge}</span>
               </div>

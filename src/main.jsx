@@ -20,8 +20,11 @@ import RequestService from "./pages/RequestService";
 import ServiceRequest from "./pages/ServiceRequest";
 import Payment from "./components/Payment";
 import Review from "./pages/Review";
+import PrivateRoute from "./components/PrivateRoute";
+import ManageUsers from "./components/ManageUsers";
 
 const router = createBrowserRouter([
+  // user dashboard
   {
     element: <AppLayout />,
     children: [
@@ -31,15 +34,27 @@ const router = createBrowserRouter([
       },
       {
         path: "/hire",
-        element: <HireTechnician />,
+        element: (
+          <PrivateRoute>
+            <HireTechnician />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/service/request",
-        element: <RequestService />,
+        element: (
+          <PrivateRoute>
+            <RequestService />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/payment/:id",
-        element: <Payment />,
+        element: (
+          <PrivateRoute>
+            <Payment />,
+          </PrivateRoute>
+        ),
       },
       {
         path: "/review/:id",
@@ -55,6 +70,8 @@ const router = createBrowserRouter([
     path: "/login",
     element: <Login />,
   },
+
+  // manager dashboard
   {
     path: "/dashboard",
     element: <DashboardLayout />,
@@ -65,23 +82,59 @@ const router = createBrowserRouter([
       },
       {
         path: "/dashboard/category/new",
-        element: <Category />,
+        element: (
+          <PrivateRoute>
+            <Category />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/dashboard/category/edit/:id",
-        element: <Category key={Math.random()} />,
+        element: (
+          <PrivateRoute>
+            <Category key={Math.random()} />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/dashboard/categories",
-        element: <MyCategories key={Math.random()} />,
+        element: (
+          <PrivateRoute>
+            <MyCategories key={Math.random()} />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/dashboard/service/request",
-        element: <ServiceRequest />,
+        element: (
+          <PrivateRoute>
+            <ServiceRequest />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/dashboard/service/all",
         element: <div>Given services</div>,
+      },
+    ],
+  },
+
+  // admin dashboard
+  {
+    path: "/admin/dashboard",
+    element: <DashboardLayout />,
+    children: [
+      {
+        path: "/admin/dashboard",
+        element: <Navigate to="/admin/dashboard/users" replace={true} />,
+      },
+      {
+        path: "/admin/dashboard/users",
+        element: (
+          <PrivateRoute>
+            <ManageUsers />
+          </PrivateRoute>
+        ),
       },
     ],
   },

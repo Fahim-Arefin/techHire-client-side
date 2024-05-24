@@ -17,6 +17,7 @@ const RequestCard = ({ data, manager, onChange }) => {
     reset,
   } = useForm();
 
+  const [acceptLoading, setAcceptLoading] = useState();
   const [loading, setLoading] = useState(false);
   const { user, successToast, errorToast } = useAuth();
 
@@ -47,24 +48,30 @@ const RequestCard = ({ data, manager, onChange }) => {
 
   const handleAccept = async (id) => {
     console.log(id);
+    setAcceptLoading(true);
     const res = await axiosSecure.patch(`/api/service/edit/${id}`, {
       status: "accepted",
     });
 
     if (res.status === 200) {
       onChange(id, "accepted");
+      setAcceptLoading(false);
     } else {
+      setAcceptLoading(false);
       throw new Error(`Couldn't update service`);
     }
   };
   const handleReject = async (id) => {
+    setLoading(true);
     console.log(id);
     const res = await axiosSecure.patch(`/api/service/edit/${id}`, {
       status: "rejected",
     });
     if (res.status === 200) {
       onChange(id, "rejected");
+      setLoading(false);
     } else {
+      setLoading(false);
       throw new Error(`Couldn't update service`);
     }
   };
@@ -75,13 +82,16 @@ const RequestCard = ({ data, manager, onChange }) => {
   };
 
   const handleFinishService = async (id) => {
+    setLoading(true);
     console.log(id);
     const res = await axiosSecure.patch(`/api/service/edit/${id}`, {
       status: "completed",
     });
     if (res.status === 200) {
       onChange(id, "completed");
+      setLoading(false);
     } else {
+      setLoading(false);
       throw new Error(`Couldn't update service`);
     }
   };
@@ -124,18 +134,18 @@ const RequestCard = ({ data, manager, onChange }) => {
         <div>
           <h2 className="text-xl font-medium text-gray-800">
             {/* {data.category.area} */}
-            {data.category.category}
+            {data?.category?.category}
           </h2>
 
           <div className="ml-auto text-sm text-gray-500">
-            <span>{data.category.area}</span>
-            <span className="ml-2 text-xs">(${data.category.entryFee})</span>
+            <span>{data?.category?.area}</span>
+            <span className="ml-2 text-xs">(${data?.category?.entryFee})</span>
           </div>
         </div>
         <div
           className={`text-xs font-medium px-3 py-1 rounded-xl h-fit capitalize ${bg} ${text}`}
         >
-          <span>{data.status}</span>
+          <span>{data?.status}</span>
         </div>
       </div>
       {/* body */}
@@ -150,7 +160,7 @@ const RequestCard = ({ data, manager, onChange }) => {
               />
             </div>
             <p className="text-xs font-medium text-gray-800">
-              {manager ? data.user.userName : data.category.managerName}
+              {manager ? data?.user?.userName : data?.category?.managerName}
             </p>
           </div>
           <div className="flex gap-x-2 items-end">
@@ -161,9 +171,9 @@ const RequestCard = ({ data, manager, onChange }) => {
                   src="/telephone.png"
                   alt="request icon"
                 />
-              ) : data.status === "paid" ||
-                data.status === "accepted" ||
-                data.status === "completed" ? (
+              ) : data?.status === "paid" ||
+                data?.status === "accepted" ||
+                data?.status === "completed" ? (
                 <img
                   className="w-4 h-4"
                   src="/telephone.png"
@@ -175,46 +185,48 @@ const RequestCard = ({ data, manager, onChange }) => {
             </div>
             <p className="text-xs font-medium text-gray-800">
               {manager
-                ? data.userPhoneNumber
-                : data.status === "paid" ||
-                  data.status === "accepted" ||
-                  data.status === "completed"
-                ? data.category.phoneNumber
+                ? data?.userPhoneNumber
+                : data?.status === "paid" ||
+                  data?.status === "accepted" ||
+                  data?.status === "completed"
+                ? data?.category?.phoneNumber
                 : ""}
             </p>
           </div>
         </div>
 
-        <p className="text-xs text-gray-500 px-4">{data.details}</p>
+        <p className="text-xs text-gray-500 px-4">{data?.details}</p>
       </div>
       {/* footer */}
       <div className="">
         {/* manager */}
         {manager ? (
-          data.status === "pending" ? (
+          data?.status === "pending" ? (
             <div className="flex  p-4 bg-gray-100 border-t border-gray-200">
               <div className="text-xs flex gap-x-2">
                 <Button
                   onClick={() => handleAccept(data._id)}
                   secondary
-                  className="px-3 py-1.5 rounded-[4px]"
+                  className="px-3 py-1.5 rounded-[4px] text-xs"
+                  loading={acceptLoading}
                 >
                   accept
                 </Button>
                 <Button
                   onClick={() => handleReject(data._id)}
                   reject
-                  className="px-3 py-1.5 rounded-[4px] bg-rose-500 text-white"
+                  className="px-3 py-1.5 rounded-[4px] bg-rose-500 text-white text-xs"
+                  loading={loading}
                 >
                   reject
                 </Button>
               </div>
             </div>
-          ) : data.status === "accepted" ? (
+          ) : data?.status === "accepted" ? (
             <div className="capitalize text-xs p-4 bg-gray-100 border-t border-gray-200 text-[#1e91cf] text-center font-medium">
               <div>Client is now payment process.</div>
             </div>
-          ) : data.status === "paid" ? (
+          ) : data?.status === "paid" ? (
             <div className="capitalize text-xs p-4 bg-gray-100 border-t border-gray-200 text-center">
               <div className="flex justify-between items-center">
                 <div className="font-medium">
@@ -225,12 +237,13 @@ const RequestCard = ({ data, manager, onChange }) => {
                   secondary
                   outline
                   className="px-3 py-1 rounded-[4px]  "
+                  loading={loading}
                 >
                   Finish Service
                 </Button>
               </div>
             </div>
-          ) : data.status === "completed" ? (
+          ) : data?.status === "completed" ? (
             <div className="capitalize text-xs p-4 bg-gray-100 border-t border-gray-200 text-purple-500 text-center font-medium">
               You Successfully finish the service.
             </div>
@@ -240,11 +253,11 @@ const RequestCard = ({ data, manager, onChange }) => {
             </div>
           )
         ) : // user
-        data.status === "pending" ? (
+        data?.status === "pending" ? (
           <div className="capitalize text-xs p-4 bg-gray-100 border-t border-gray-200 text-[#1e91cf] text-center font-medium">
             please wait for manager response.
           </div>
-        ) : data.status === "accepted" ? (
+        ) : data?.status === "accepted" ? (
           <div className="capitalize text-xs p-4 bg-gray-100 border-t border-gray-200 text-[#1e91cf] text-center font-medium">
             <div className="flex justify-end items-center">
               {/* <div>
@@ -262,13 +275,13 @@ const RequestCard = ({ data, manager, onChange }) => {
               </Button>
             </div>
           </div>
-        ) : data.status === "paid" ? (
+        ) : data?.status === "paid" ? (
           <div className="capitalize text-xs p-4 bg-gray-100 border-t border-gray-200 text-[#1e91cf] text-center font-medium">
             <div>
               <div>Manager will contact to you soon.</div>
             </div>
           </div>
-        ) : data.status === "completed" ? (
+        ) : data?.status === "completed" ? (
           <div className="capitalize text-xs p-4 bg-gray-100 border-t border-gray-200 text-purple-500 text-center">
             <div className="flex justify-between items-center">
               <div className="font-medium">Your Service have finished.</div>
@@ -375,7 +388,7 @@ const RequestCard = ({ data, manager, onChange }) => {
       </Modal> */}
       <Modal id={`${data._id}`}>
         <div>
-          <h1>{data.category.category}</h1>
+          <h1>{data?.category?.category}</h1>
           <form className="mt-4" onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-4">
               <input
